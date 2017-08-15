@@ -1,0 +1,1502 @@
+
+
+Blockchain
+----------------------------------------
+[
+    {
+        "id": "fd3165cf.0cec98",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "Blockchain",
+        "func": "d = msg.payload.temperature;\ntid = global.get('teamName');\ntime = new Date().toISOString();\nmsg.payload = {\n \"$class\": \"org.acme.sample.SetSensorTemp\",\n  \"gauge\": \"resource:org.acme.sample.Sensor#teamid:\"+tid,\n  \"newSensorValue\": d,\n  \"timestamp\": time\n};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 422.0000457763672,
+        "y": 60.666725158691406,
+        "wires": [
+            [
+                "945e80c5.c8d75"
+            ]
+        ]
+    },
+    {
+        "id": "423e3f4e.13c8b",
+        "type": "ui_text_input",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "label": "TeamName",
+        "group": "77adb85b.7b3528",
+        "order": 1,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": "500",
+        "topic": "",
+        "x": 508.6667070388794,
+        "y": 220.6667251586914,
+        "wires": [
+            [
+                "8173d63.082ae28"
+            ]
+        ]
+    },
+    {
+        "id": "1e4de15b.6ba53f",
+        "type": "http request",
+        "z": "ad885727.7cae88",
+        "name": "Set Team Name",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://8a61e4ff231c4f6ea171587da8204c0a-vp0.us.blockchain.ibm.com:5004/api/org.acme.sample.Sensor",
+        "tls": "",
+        "x": 807.0556116104126,
+        "y": 385.8889503479004,
+        "wires": [
+            [
+                "66ad2bdb.c947c4"
+            ]
+        ]
+    },
+    {
+        "id": "8173d63.082ae28",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "setTeamname",
+        "func": "n = msg.payload;\nglobal.set('teamName',n);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 725.6667070388794,
+        "y": 221.6667251586914,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "35a87b96.2bcd24",
+        "type": "ui_button",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "group": "fcec7921.e13448",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Change Thermostat",
+        "color": "Light Blue",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "x": 285.6667070388794,
+        "y": 609.6667251586914,
+        "wires": [
+            [
+                "b9b15514.1d5c98"
+            ]
+        ]
+    },
+    {
+        "id": "b9b15514.1d5c98",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "ChangeThermo",
+        "func": "tid = global.get('teamName');\ntime = new Date().toISOString();\nthermo = global.get('TempThermostat');\nasset = \"resource:org.acme.sample.Sensor#teamid:\"+tid,\n\nmsg.payload = {\n  \"$class\": \"org.acme.sample.ChangeThermostatTemp\",\n  \"thermostat\": asset,\n  \"newThermostatValue\": thermo,\n  \"timestamp\": time\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 603.6667070388794,
+        "y": 611.6667251586914,
+        "wires": [
+            [
+                "7b2237ec.fc1a98"
+            ]
+        ]
+    },
+    {
+        "id": "7b2237ec.fc1a98",
+        "type": "http request",
+        "z": "ad885727.7cae88",
+        "name": "Change Thermostat",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://8a61e4ff231c4f6ea171587da8204c0a-vp0.us.blockchain.ibm.com:5004/api/org.acme.sample.ChangeThermostatTemp",
+        "tls": "",
+        "x": 931.5556154251099,
+        "y": 614.7778425216675,
+        "wires": [
+            [
+                "66459be4.06a274"
+            ]
+        ]
+    },
+    {
+        "id": "a04db3c8.22db2",
+        "type": "ui_button",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "group": "77adb85b.7b3528",
+        "order": 5,
+        "width": "6",
+        "height": "1",
+        "passthru": false,
+        "label": "Get Recommendation",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "x": 360.4444818496704,
+        "y": 804.2223205566406,
+        "wires": [
+            [
+                "fcfb1b1.6b429e8"
+            ]
+        ]
+    },
+    {
+        "id": "fcfb1b1.6b429e8",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "getRecommendation",
+        "func": "tid = global.get('teamName');\ntime = new Date().toISOString();\nweather = global.get('weather-observation');\nasset = \"resource:org.acme.sample.Sensor#teamid:\"+tid,\ntransid = global.get('lastTransID');\nmsg.payload = {\n  \"$class\": \"org.acme.sample.CompareWeather\",\n  \"transactionId\": transid,\n  \"recommend\": asset,\n  \"outsideTemp\": weather.current_observation.wind_mph,\n  \"feelsLike\": weather.current_observation.feelslike_c,\n  \"timestamp\": time\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 604.4444818496704,
+        "y": 804.2223205566406,
+        "wires": [
+            [
+                "8eec5e39.13cae"
+            ]
+        ]
+    },
+    {
+        "id": "8eec5e39.13cae",
+        "type": "http request",
+        "z": "ad885727.7cae88",
+        "name": "CompareWeather",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://8a61e4ff231c4f6ea171587da8204c0a-vp0.us.blockchain.ibm.com:5004/api/org.acme.sample.CompareWeather",
+        "tls": "",
+        "x": 844.4444818496704,
+        "y": 804.2223205566406,
+        "wires": [
+            [
+                "c471baab.9a21d8",
+                "9225e559.842878"
+            ]
+        ]
+    },
+    {
+        "id": "c471baab.9a21d8",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "getTeamID",
+        "func": "team = global.get('teamName');\nmsg = {};\nmsg.topic = \"teamid%3A\"+team;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1062.4444818496704,
+        "y": 804.2223205566406,
+        "wires": [
+            [
+                "d7f17aa.b994588",
+                "6c94d6a9.5f7fc8"
+            ]
+        ]
+    },
+    {
+        "id": "d7f17aa.b994588",
+        "type": "http request",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "url": "https://8a61e4ff231c4f6ea171587da8204c0a-vp0.us.blockchain.ibm.com:5004/api/org.acme.sample.Sensor/{{{topic}}}",
+        "tls": "",
+        "x": 1257.4444818496704,
+        "y": 804.2223205566406,
+        "wires": [
+            [
+                "3c70e59d.94bf8a"
+            ]
+        ]
+    },
+    {
+        "id": "d5cb2716.e791a8",
+        "type": "ui_toast",
+        "z": "ad885727.7cae88",
+        "position": "dialog",
+        "displayTime": "3",
+        "highlight": "",
+        "outputs": 1,
+        "ok": "OK",
+        "cancel": "",
+        "topic": "",
+        "name": "",
+        "x": 813.6667070388794,
+        "y": 302.6667251586914,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5141760b.07eba8",
+        "type": "inject",
+        "z": "ad885727.7cae88",
+        "name": "check team name",
+        "topic": "Team Name is not set. Please add your team name and press the add team name button",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 240.6667070388794,
+        "y": 315.6667251586914,
+        "wires": [
+            [
+                "fa767108.cc56",
+                "18729a5e.e77806"
+            ]
+        ]
+    },
+    {
+        "id": "fa767108.cc56",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "locatedTeamName",
+        "func": "team = global.get(\"teamName\");\nif (team){\n    msg.topic=\"Team Name is set\"\n    msg.payload = team;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 595.6667070388794,
+        "y": 301.6667251586914,
+        "wires": [
+            [
+                "d5cb2716.e791a8"
+            ]
+        ]
+    },
+    {
+        "id": "8770184b.f6b698",
+        "type": "ui_button",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "group": "77adb85b.7b3528",
+        "order": 2,
+        "width": "6",
+        "height": "1",
+        "passthru": false,
+        "label": "Add Team Name",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "x": 284.6667070388794,
+        "y": 385.6667251586914,
+        "wires": [
+            [
+                "6ee79a40.fea424"
+            ]
+        ]
+    },
+    {
+        "id": "6ee79a40.fea424",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "getTeamName",
+        "func": "global.set('Thermostat', 20);\nn = global.get('teamName');\nmsg.payload = {\n  \"$class\": \"org.acme.sample.Sensor\",\n  \"teamID\": \"teamid:\"+n,\n  \"teamName\": n,\n  \"sensorTemp\":0,\n  \"thermostatTemp\":20,\n  \"recommendation\":\"none\"\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 541.1666994094849,
+        "y": 386.22229766845703,
+        "wires": [
+            [
+                "1e4de15b.6ba53f"
+            ]
+        ]
+    },
+    {
+        "id": "18729a5e.e77806",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "Find Team Name",
+        "func": "n = global.get('teamName');\nif (n){\n    msg.payload = n;\n}else{\n    msg.payload=\"Please Add Team Name\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 283.6667070388794,
+        "y": 223.6667251586914,
+        "wires": [
+            [
+                "423e3f4e.13c8b"
+            ]
+        ]
+    },
+    {
+        "id": "88531842.dc7068",
+        "type": "ui_text",
+        "z": "ad885727.7cae88",
+        "group": "77adb85b.7b3528",
+        "order": 4,
+        "width": "6",
+        "height": "1",
+        "name": "",
+        "label": "Ask Block Chain for Recommendation",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "x": 333.6667070388794,
+        "y": 714.6667251586914,
+        "wires": []
+    },
+    {
+        "id": "5f207a1b.ab8af4",
+        "type": "link out",
+        "z": "ad885727.7cae88",
+        "name": "Weather",
+        "links": [
+            "5c222864.47dcb8",
+            "7a85ecda.2fe664"
+        ],
+        "x": 846.4723443984985,
+        "y": 1081.6389389038086,
+        "wires": []
+    },
+    {
+        "id": "331d09b8.d44e76",
+        "type": "link out",
+        "z": "ad885727.7cae88",
+        "name": "Blockchain add block",
+        "links": [
+            "fd7485dd.c1cfc8"
+        ],
+        "x": 854.2777509689331,
+        "y": 61.66671371459961,
+        "wires": []
+    },
+    {
+        "id": "66ad2bdb.c947c4",
+        "type": "link out",
+        "z": "ad885727.7cae88",
+        "name": "Blockchain - teamname",
+        "links": [
+            "8e7ebbb3.090308",
+            "4808aeac.aa88b",
+            "aa9a1943.b77ca8"
+        ],
+        "x": 971.6111488342285,
+        "y": 384.7777729034424,
+        "wires": []
+    },
+    {
+        "id": "66459be4.06a274",
+        "type": "link out",
+        "z": "ad885727.7cae88",
+        "name": "Blockchain change thermo",
+        "links": [
+            "aa9a1943.b77ca8",
+            "8e7ebbb3.090308"
+        ],
+        "x": 1099.3889045715332,
+        "y": 615.8888931274414,
+        "wires": []
+    },
+    {
+        "id": "9225e559.842878",
+        "type": "link out",
+        "z": "ad885727.7cae88",
+        "name": "Blockchain Compare",
+        "links": [],
+        "x": 990.222222328186,
+        "y": 855.7499618530273,
+        "wires": []
+    },
+    {
+        "id": "3c70e59d.94bf8a",
+        "type": "link out",
+        "z": "ad885727.7cae88",
+        "name": "Blockchain recommendation",
+        "links": [
+            "26579818.2a28c8",
+            "34c327fb.be62a8",
+            "2eedc571.72ce5a"
+        ],
+        "x": 1386.055500984192,
+        "y": 885.8888931274414,
+        "wires": []
+    },
+    {
+        "id": "64f73383.55e12c",
+        "type": "link in",
+        "z": "ad885727.7cae88",
+        "name": "IoT Event - Temperature",
+        "links": [
+            "41c18c85.8ed854"
+        ],
+        "x": 209.33340549468994,
+        "y": 61.000043869018555,
+        "wires": [
+            [
+                "fd3165cf.0cec98"
+            ]
+        ]
+    },
+    {
+        "id": "5baf2a75.115ed4",
+        "type": "ui_text_input",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "label": "City",
+        "group": "f8233ed6.89781",
+        "order": 3,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": "500",
+        "topic": "",
+        "x": 650.000054359436,
+        "y": 911.6667098999023,
+        "wires": [
+            [
+                "5195c192.0f639"
+            ]
+        ]
+    },
+    {
+        "id": "5195c192.0f639",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "setCity",
+        "func": "n = msg.payload;\nglobal.set('city',n);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 800.7499933242798,
+        "y": 911.4166793823242,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "76b488ff.80e878",
+        "type": "inject",
+        "z": "ad885727.7cae88",
+        "name": "check City, State",
+        "topic": "A City, State is note entered. Please add a City, State and then press the Get Current Temps button.",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "x": 284.50008487701416,
+        "y": 987.9167098999023,
+        "wires": [
+            [
+                "148f4be0.0bfc54",
+                "69e13f16.223b6"
+            ]
+        ]
+    },
+    {
+        "id": "148f4be0.0bfc54",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "Find City",
+        "func": "n = global.get('city');\nif (n){\n    msg.payload = n;\n}else{\n    msg.payload=\"Please enter a city.\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 472.50005435943604,
+        "y": 912.1667404174805,
+        "wires": [
+            [
+                "5baf2a75.115ed4"
+            ]
+        ]
+    },
+    {
+        "id": "54150254.a42fbc",
+        "type": "ui_text_input",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "label": "State",
+        "group": "f8233ed6.89781",
+        "order": 4,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "mode": "text",
+        "delay": "500",
+        "topic": "",
+        "x": 651.250054359436,
+        "y": 989.1667098999023,
+        "wires": [
+            [
+                "450c6c0c.7c1c54"
+            ]
+        ]
+    },
+    {
+        "id": "450c6c0c.7c1c54",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "setState",
+        "func": "n = msg.payload;\nglobal.set('state',n);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 801.9999933242798,
+        "y": 988.9166793823242,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "69e13f16.223b6",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "Find State",
+        "func": "n = global.get('state');\nif (n){\n    msg.payload = n;\n}else{\n    msg.payload=\"Please enter the state your city is in.\";\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 483.75005435943604,
+        "y": 989.6667404174805,
+        "wires": [
+            [
+                "54150254.a42fbc"
+            ]
+        ]
+    },
+    {
+        "id": "7fa587aa.e3a948",
+        "type": "ui_button",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "group": "f8233ed6.89781",
+        "order": 5,
+        "width": "6",
+        "height": "1",
+        "passthru": false,
+        "label": "Get Current Temps",
+        "color": "",
+        "bgcolor": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "",
+        "x": 312.50005435943604,
+        "y": 1081.6667098999023,
+        "wires": [
+            [
+                "7a6e613f.713f8"
+            ]
+        ]
+    },
+    {
+        "id": "7a6e613f.713f8",
+        "type": "function",
+        "z": "ad885727.7cae88",
+        "name": "City,State",
+        "func": "city = global.get('city');\nmsg = {};\nmsg.city=city;\nmsg.state = global.get('state');\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 520.625054359436,
+        "y": 1132.6042098999023,
+        "wires": [
+            [
+                "95259ab0.720138"
+            ]
+        ]
+    },
+    {
+        "id": "95259ab0.720138",
+        "type": "http request",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "url": "http://api.wunderground.com/api/9648f5eaf4b568c9/conditions/q/{{{state}}}/{{{city}}}.json",
+        "tls": "",
+        "x": 523.125054359436,
+        "y": 1252.6042098999023,
+        "wires": [
+            [
+                "5f207a1b.ab8af4"
+            ]
+        ]
+    },
+    {
+        "id": "945e80c5.c8d75",
+        "type": "http request",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://8a61e4ff231c4f6ea171587da8204c0a-vp0.us.blockchain.ibm.com:5004/api/org.acme.sample.SetSensorTemp",
+        "tls": "",
+        "x": 650.625054359436,
+        "y": 58.854209899902344,
+        "wires": [
+            [
+                "331d09b8.d44e76"
+            ]
+        ]
+    },
+    {
+        "id": "6c94d6a9.5f7fc8",
+        "type": "debug",
+        "z": "ad885727.7cae88",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "false",
+        "x": 1239.500054359436,
+        "y": 739.1667098999023,
+        "wires": []
+    },
+    {
+        "id": "77adb85b.7b3528",
+        "type": "ui_group",
+        "z": "",
+        "name": "Blockchain",
+        "tab": "95c359d4.606788",
+        "order": 2,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "fcec7921.e13448",
+        "type": "ui_group",
+        "z": "",
+        "name": "Thermostat",
+        "tab": "95c359d4.606788",
+        "order": 4,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "f8233ed6.89781",
+        "type": "ui_group",
+        "z": "",
+        "name": "Outside Temperatures",
+        "tab": "95c359d4.606788",
+        "order": 3,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "95c359d4.606788",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 2
+    }
+]
+
+
+----------------------------------------
+Dashboard
+----------------------------------------
+
+
+[
+    {
+        "id": "513d740f.7d3b7c",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "Iot Main Dash",
+        "links": [
+            "41c18c85.8ed854"
+        ],
+        "x": 53.44999694824219,
+        "y": 71.44999694824219,
+        "wires": [
+            [
+                "1bb7fc4d.d0ea64"
+            ]
+        ]
+    },
+    {
+        "id": "7704ec4.c9fc814",
+        "type": "http request",
+        "z": "122c38e.42fc3c7",
+        "name": "STSA Dashboard",
+        "method": "POST",
+        "ret": "obj",
+        "url": "https://stsa-restservers.mybluemix.net/sendStats",
+        "tls": "",
+        "x": 832.8944683074951,
+        "y": 171.45000457763672,
+        "wires": [
+            [
+                "9849f441.ae1c78"
+            ]
+        ]
+    },
+    {
+        "id": "9849f441.ae1c78",
+        "type": "debug",
+        "z": "122c38e.42fc3c7",
+        "name": "STSA Dashboard",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 1081.5610828399658,
+        "y": 172.44999408721924,
+        "wires": []
+    },
+    {
+        "id": "8d534fee.2996f",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "JSON Content Type",
+        "func": "msg.header = {\n \"Content-Type\": \"application/json\"\n    \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 588.2277812957764,
+        "y": 171.3388500213623,
+        "wires": [
+            [
+                "7704ec4.c9fc814"
+            ]
+        ]
+    },
+    {
+        "id": "1bb7fc4d.d0ea64",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "format: Iot DashBoard  ",
+        "func": "msg.payload.eventtype = \"iot\";\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 276.22775077819824,
+        "y": 73.67220306396484,
+        "wires": [
+            [
+                "8d534fee.2996f"
+            ]
+        ]
+    },
+    {
+        "id": "41e091c.eec4c7",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "format: Weather Dashboard",
+        "func": "msg = {};\nmsg.payload ={ \n    \"eventtype\" :\"weather\"\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 270.4499797821045,
+        "y": 343.6721878051758,
+        "wires": [
+            [
+                "8d534fee.2996f"
+            ]
+        ]
+    },
+    {
+        "id": "7a85ecda.2fe664",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "Weather Main Dash",
+        "links": [
+            "5f207a1b.ab8af4"
+        ],
+        "x": 59.67220878601074,
+        "y": 346.7832717895508,
+        "wires": [
+            [
+                "41e091c.eec4c7"
+            ]
+        ]
+    },
+    {
+        "id": "8e7ebbb3.090308",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "Blockchain Main Dash",
+        "links": [
+            "66ad2bdb.c947c4",
+            "66459be4.06a274"
+        ],
+        "x": 38.11666679382324,
+        "y": 753.4499588012695,
+        "wires": [
+            [
+                "f9620e33.1e5ae"
+            ]
+        ]
+    },
+    {
+        "id": "d56d7b86.e47f08",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "WCS Main Dash",
+        "links": [
+            "83efbb3d.aadc48"
+        ],
+        "x": 53.45000690884058,
+        "y": 151.44999270968964,
+        "wires": [
+            [
+                "e87a60c.8a30ca"
+            ]
+        ]
+    },
+    {
+        "id": "f982c29e.ff1ca",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "format: Blockchain Remote Dashboard",
+        "func": "msg = {}\nmsg.payload = {\n    \"eventtype\":\"blockchain\",\n    \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 523.7832927703857,
+        "y": 614.3389358520508,
+        "wires": [
+            [
+                "8d534fee.2996f"
+            ]
+        ]
+    },
+    {
+        "id": "e87a60c.8a30ca",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "format: WCS Dashboard",
+        "func": "msg.payload = {\n    \"eventtype\" : \"conversation\"\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 266.22775077819824,
+        "y": 144.89441680908203,
+        "wires": [
+            [
+                "8d534fee.2996f"
+            ]
+        ]
+    },
+    {
+        "id": "264fea25.468866",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "format: KeyValue Dashboard",
+        "func": "msg = {}\nmsg.payload = {\n    \"eventtype\":\"keyvalue\",\n    \n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 254.00555229187012,
+        "y": 237.00553131103516,
+        "wires": [
+            [
+                "8d534fee.2996f"
+            ]
+        ]
+    },
+    {
+        "id": "74a7c9d2.3d0eb8",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "CICS Main Dash",
+        "links": [
+            "39b09e43.aace42"
+        ],
+        "x": 53.45001411437988,
+        "y": 233.6722240447998,
+        "wires": [
+            [
+                "264fea25.468866"
+            ]
+        ]
+    },
+    {
+        "id": "80f3525c.a984c",
+        "type": "ui_text",
+        "z": "122c38e.42fc3c7",
+        "group": "77adb85b.7b3528",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "block count",
+        "label": "Blocks in Chain",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "x": 449.3388957977295,
+        "y": 754.5611038208008,
+        "wires": []
+    },
+    {
+        "id": "f9620e33.1e5ae",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "Number of Blocks",
+        "func": "\nif(global.get(\"blocks\") && global.get(\"blocks\")>0){\n    val = global.get(\"blocks\") + 1;\n}else{\n    val = 1;\n}\n\nglobal.set(\"blocks\",val);\nmsg.payload = val;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 229.11666679382324,
+        "y": 753.8944778442383,
+        "wires": [
+            [
+                "80f3525c.a984c",
+                "f982c29e.ff1ca"
+            ]
+        ]
+    },
+    {
+        "id": "4808aeac.aa88b",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "status teamname",
+        "links": [
+            "66ad2bdb.c947c4"
+        ],
+        "x": 34.33889579772949,
+        "y": 844.5611038208008,
+        "wires": [
+            [
+                "229441db.26e1ce"
+            ]
+        ]
+    },
+    {
+        "id": "aa9a1943.b77ca8",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "status change thermostat",
+        "links": [
+            "66ad2bdb.c947c4",
+            "66459be4.06a274"
+        ],
+        "x": 26.338895797729492,
+        "y": 998.5611038208008,
+        "wires": [
+            [
+                "29435ac9.c79366"
+            ]
+        ]
+    },
+    {
+        "id": "2eedc571.72ce5a",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "status recommendation",
+        "links": [
+            "3c70e59d.94bf8a"
+        ],
+        "x": 22.338895797729492,
+        "y": 1108.5611038208008,
+        "wires": [
+            [
+                "51fea31a.85765c"
+            ]
+        ]
+    },
+    {
+        "id": "4b232579.9b590c",
+        "type": "ui_text",
+        "z": "122c38e.42fc3c7",
+        "group": "77adb85b.7b3528",
+        "order": 6,
+        "width": "6",
+        "height": "3",
+        "name": "Blockchain status line",
+        "label": "Status",
+        "format": "{{msg.message}}",
+        "layout": "col-center",
+        "x": 473.3388957977295,
+        "y": 850.5611038208008,
+        "wires": []
+    },
+    {
+        "id": "229441db.26e1ce",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "Status",
+        "func": "if (msg.payload.error && msg.payload.error.code == 2){\n    msg.message = \"Team Exists\";\nreturn msg;\n    \n}\n\n\nif (msg.payload.teamName){\n    msg.message = msg.payload.teamName + \" added successfully\";\nreturn msg;\n    \n}\n\n\nif (msg.payload.transactionId){\n    msg.message = \"Transaction added: <br>\" + msg.payload.transactionId;\n    global.set('lastTransID', msg.payload.transactionId);\n    return msg;\n}\n\n\n//msg.payload = \"\";\nreturn msg.message;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 183.783353805542,
+        "y": 843.1166458129883,
+        "wires": [
+            [
+                "4b232579.9b590c"
+            ]
+        ]
+    },
+    {
+        "id": "3d3fcebe.14a9f2",
+        "type": "ui_slider",
+        "z": "122c38e.42fc3c7",
+        "name": "Thermostat",
+        "label": "Thermostat Value",
+        "group": "fcec7921.e13448",
+        "order": 2,
+        "width": "6",
+        "height": "1",
+        "passthru": true,
+        "topic": "",
+        "min": "15",
+        "max": "40",
+        "step": 1,
+        "x": 701.0056438446045,
+        "y": 1113.0055618286133,
+        "wires": [
+            [
+                "cb3761a9.3c3b2",
+                "87b9b810.e5ef38"
+            ]
+        ]
+    },
+    {
+        "id": "cb3761a9.3c3b2",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "Save Thermostat Global",
+        "func": "global.set('TempThermostat',msg.payload);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1050.6721477508545,
+        "y": 1116.3386917114258,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "87b9b810.e5ef38",
+        "type": "ui_gauge",
+        "z": "122c38e.42fc3c7",
+        "name": "Thermostat Guage",
+        "group": "fcec7921.e13448",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Thermostat",
+        "label": "Celsius",
+        "format": "{{value}}",
+        "min": "15",
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 1030.5610637664795,
+        "y": 1187.2277297973633,
+        "wires": []
+    },
+    {
+        "id": "81d36590.ac7c78",
+        "type": "ui_text",
+        "z": "122c38e.42fc3c7",
+        "group": "fcec7921.e13448",
+        "order": 5,
+        "width": "6",
+        "height": "1",
+        "name": "Thermo Value",
+        "label": "Current Thermostat Setting",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "x": 693.1167278289795,
+        "y": 1023.5611038208008,
+        "wires": []
+    },
+    {
+        "id": "654aed1d.326f14",
+        "type": "ui_text",
+        "z": "122c38e.42fc3c7",
+        "group": "fcec7921.e13448",
+        "order": 1,
+        "width": "6",
+        "height": "2",
+        "name": "Thermostat status line",
+        "label": "Status",
+        "format": "{{msg.message}}",
+        "layout": "col-center",
+        "x": 467.838903427124,
+        "y": 910.3943719863892,
+        "wires": []
+    },
+    {
+        "id": "29435ac9.c79366",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "Status",
+        "func": "\nif (msg.payload.error){\n    msg.message = \"Failed to change the Thermostat\";\n    msg.payload = global.get('Thermostat');\n    return msg;\n}\n\nif ((msg.payload.$class) && (msg.payload.$class === \"org.acme.sample.ChangeThermostatTemp\")){\n    if(msg.payload.transactionId){\n        msg.message = \"Changed Thermostat to \" + msg.payload.newThermostatValue;\n        global.set('Thermostat',msg.payload.newThermostatValue );\n        msg.payload = msg.payload.newThermostatValue;\n        return msg;\n    }\n    msg.message = \"Failed to change the Thermostat\";\n    msg.payload = global.get('Thermostat');\n    return msg;\n}\nmsg.payload = global.get('Thermostat');\nmsg.message = \"\";\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 185.283353805542,
+        "y": 994.5609817504883,
+        "wires": [
+            [
+                "81d36590.ac7c78",
+                "654aed1d.326f14",
+                "3d3fcebe.14a9f2",
+                "ef966031.ec40d"
+            ]
+        ]
+    },
+    {
+        "id": "51fea31a.85765c",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "status",
+        "func": "\nif ((msg.payload.$class) && (msg.payload.$class === \"org.acme.sample.Sensor\") && (msg.payload.recommendation)){\n msg.thermo = msg.payload.thermostatTemp;\n msg.message = msg.payload.recommendation;\n \nreturn msg;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 185.561185836792,
+        "y": 1113.6721878051758,
+        "wires": [
+            [
+                "4b232579.9b590c",
+                "fe7f74e9.6a98b8",
+                "aeb7d3e6.027e3"
+            ]
+        ]
+    },
+    {
+        "id": "fe7f74e9.6a98b8",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "update Thermostat",
+        "func": "msg.payload = msg.thermo;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 420.561185836792,
+        "y": 1114.6721878051758,
+        "wires": [
+            [
+                "3d3fcebe.14a9f2",
+                "81d36590.ac7c78"
+            ]
+        ]
+    },
+    {
+        "id": "263d10ff.e2c6d",
+        "type": "ui_gauge",
+        "z": "122c38e.42fc3c7",
+        "name": "",
+        "group": "67925669.85de78",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperature",
+        "label": "Celsius",
+        "format": "{{value}}",
+        "min": "25",
+        "max": "45",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 464.0889072418213,
+        "y": 424.06111335754395,
+        "wires": []
+    },
+    {
+        "id": "31e80de4.54a3c2",
+        "type": "ui_chart",
+        "z": "122c38e.42fc3c7",
+        "name": "",
+        "group": "67925669.85de78",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "label": "chart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "Waiting on temperature data",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "x": 454.33890533447266,
+        "y": 520.811113357544,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "fd7485dd.c1cfc8",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "Temperature Gauges",
+        "links": [
+            "331d09b8.d44e76",
+            "41c18c85.8ed854"
+        ],
+        "x": 62.33889579772949,
+        "y": 486.56110382080067,
+        "wires": [
+            [
+                "78be1740.361ac8"
+            ]
+        ]
+    },
+    {
+        "id": "78be1740.361ac8",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "format: temperature",
+        "func": "msg.payload = msg.payload.temperature;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 231.71390342712402,
+        "y": 478.8111114501953,
+        "wires": [
+            [
+                "263d10ff.e2c6d",
+                "31e80de4.54a3c2"
+            ]
+        ]
+    },
+    {
+        "id": "ef966031.ec40d",
+        "type": "debug",
+        "z": "122c38e.42fc3c7",
+        "name": "block debug",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 949.2138957977295,
+        "y": 818.8111038208008,
+        "wires": []
+    },
+    {
+        "id": "5c222864.47dcb8",
+        "type": "link in",
+        "z": "122c38e.42fc3c7",
+        "name": "Weather Dashboard",
+        "links": [
+            "5f207a1b.ab8af4"
+        ],
+        "x": 29.005553245544434,
+        "y": 1339.2277479171753,
+        "wires": [
+            [
+                "54efb832.e49848"
+            ]
+        ]
+    },
+    {
+        "id": "54efb832.e49848",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "Cache Weather",
+        "func": "global.set('weather-observation',msg.payload);\nmsg.payload = {\n    feelslike: msg.payload.current_observation.wind_gust_mph,\n    outside: msg.payload.current_observation.wind_mph\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 244.00555229187012,
+        "y": 1340.3388137817383,
+        "wires": [
+            [
+                "755c0cda.a34c24",
+                "a5a0ceef.53918"
+            ]
+        ]
+    },
+    {
+        "id": "a0546d5f.924e6",
+        "type": "ui_gauge",
+        "z": "122c38e.42fc3c7",
+        "name": "Feels like",
+        "group": "f8233ed6.89781",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Feels Like",
+        "label": "MPH",
+        "format": "{{value}}",
+        "min": "0",
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 637.7833461761475,
+        "y": 1309.5610256195068,
+        "wires": []
+    },
+    {
+        "id": "86f96787.135e88",
+        "type": "ui_gauge",
+        "z": "122c38e.42fc3c7",
+        "name": "Outside Temerature",
+        "group": "f8233ed6.89781",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Wind Speed",
+        "label": "MPH",
+        "format": "{{value|number:1}}",
+        "min": "0",
+        "max": "40",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "x": 659.7833461761475,
+        "y": 1363.5610256195068,
+        "wires": []
+    },
+    {
+        "id": "755c0cda.a34c24",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "Get Feels Like",
+        "func": "msg.payload = msg.payload.feelslike;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 438.78334617614746,
+        "y": 1311.5610256195068,
+        "wires": [
+            [
+                "a0546d5f.924e6"
+            ]
+        ]
+    },
+    {
+        "id": "a5a0ceef.53918",
+        "type": "function",
+        "z": "122c38e.42fc3c7",
+        "name": "Get Outside",
+        "func": "msg.payload=msg.payload.outside;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 428.78334617614746,
+        "y": 1364.5610256195068,
+        "wires": [
+            [
+                "86f96787.135e88"
+            ]
+        ]
+    },
+    {
+        "id": "aeb7d3e6.027e3",
+        "type": "debug",
+        "z": "122c38e.42fc3c7",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 315.5,
+        "y": 1186.5,
+        "wires": []
+    },
+    {
+        "id": "77adb85b.7b3528",
+        "type": "ui_group",
+        "z": "",
+        "name": "Blockchain",
+        "tab": "95c359d4.606788",
+        "order": 2,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "fcec7921.e13448",
+        "type": "ui_group",
+        "z": "",
+        "name": "Thermostat",
+        "tab": "95c359d4.606788",
+        "order": 4,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "67925669.85de78",
+        "type": "ui_group",
+        "z": "",
+        "name": "SenseHat",
+        "tab": "95c359d4.606788",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "f8233ed6.89781",
+        "type": "ui_group",
+        "z": "",
+        "name": "Outside Temperatures",
+        "tab": "95c359d4.606788",
+        "order": 3,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "95c359d4.606788",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 2
+    }
+]
+
+
+
+----------------------------------------
+Gauge Simulator
+----------------------------------------
+
+[
+    {
+        "id": "28a25e39.a17422",
+        "type": "rpi-sensehatsim in",
+        "z": "79653751.212418",
+        "name": "Sensor Gauge Simulator",
+        "motion": false,
+        "env": true,
+        "stick": false,
+        "x": 195.73332977294922,
+        "y": 154.13334465026855,
+        "wires": [
+            [
+                "41c18c85.8ed854"
+            ]
+        ]
+    },
+    {
+        "id": "41c18c85.8ed854",
+        "type": "link out",
+        "z": "79653751.212418",
+        "name": "IoT Environment Source",
+        "links": [
+            "513d740f.7d3b7c",
+            "64f73383.55e12c",
+            "fd7485dd.c1cfc8"
+        ],
+        "x": 540.0666942596436,
+        "y": 153.51669883728027,
+        "wires": []
+    }
+]
