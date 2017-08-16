@@ -720,7 +720,7 @@ In this section of the journey you will request access to the LinuxONE Community
 
  ![Click Close.](images/closePalette.png)
 
-9. **Copy** all of the JSON from the [GitHub repository](https://github.com/NightHaque/hyperledger-fabric-on-linux-one/blob/master/3.1.9%20NodeRed%20For%20Wind.txt) to import into the flow. 
+9. **Copy** all of the JSON from the [GitHub repository] this is for wind readings(https://github.com/NightHaque/hyperledger-fabric-on-linux-one/blob/master/3.1.9%20NodeRed%20For%20Wind.txt) to import into the flow. 
 
     - **Note:** The easiest way to do this is clicking the hyperlink above. You can also find it in the GitHub repository in the code folder as `node-red.json`. To view it in GitHub, **click** on *node-red.json*, **select** *raw* and then copy it. 
 
